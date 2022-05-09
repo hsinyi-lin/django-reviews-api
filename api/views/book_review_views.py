@@ -32,6 +32,7 @@ def get_review(request, pk):
         return Response({'success': False, 'message': '查無資料'}, status=status.HTTP_404_NOT_FOUND)
 
     return Response({
+
         'success': True,
         'data': {
             'id': book.no,
@@ -64,3 +65,43 @@ def get_critic_reviews(request):
             for book in books
         ]
     })
+
+
+@api_view(['POST'])
+def add_review(request):
+    data = request.data
+    try:
+        Book.objects.create(user_id=data['user_id'], name=data['name'],
+                            title=data['title'], comment=data['comment'])
+        return Response({'success': True, 'message': '新增成功'})
+    except:
+        return Response({'success': False, 'message': '新增失敗'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def edit_review(request, pk):
+    data = request.data
+
+    user_id = data.get('user_id')
+    book = Book.objects.filter(no=pk, user_id=user_id)
+    if not book.exists():
+        return Response({'success': False, 'message': '沒有這本書'}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        book.update(name=data['name'], title=data['title'], comment=data['comment'])
+        return Response({'success': True, 'message': '編輯成功'})
+    except:
+        return Response({'success': False, 'message': '編輯失敗'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def delete_review(request, pk):
+    data = request.data
+
+    user_id = data.get('user_id')
+    book = Book.objects.filter(no=pk, user_id=user_id)
+    if not book.exists():
+        return Response({'success': False, 'message': '沒有這本書'}, status=status.HTTP_404_NOT_FOUND)
+
+    book.delete()
+    return Response({'success': True, 'message': '刪除成功'})

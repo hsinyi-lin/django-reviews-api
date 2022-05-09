@@ -9,4 +9,7 @@ urlpatterns = [
     path('all/', get_all_reviews),
     path('get/<int:pk>/', get_review),
     path('get_critic_reviews/', get_critic_reviews),
+    path('add/', add_review),
+    path('edit/<int:pk>/', edit_review),
+    path('delete/<int:pk>/', delete_review),
 ]
