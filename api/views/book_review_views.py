@@ -3,11 +3,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from api.models import Book
+from utils.decorators import user_login_required
 
 
 @api_view()
+@user_login_required
 def get_all_reviews(request):
-    books = Book.objects.all()
+    books = Book.objects.all().order_by('no')
 
     return Response({
         'success': True,
@@ -25,6 +27,7 @@ def get_all_reviews(request):
 
 
 @api_view()
+@user_login_required
 def get_review(request, pk):
     try:
         book = Book.objects.get(pk=pk)
@@ -45,6 +48,7 @@ def get_review(request, pk):
 
 
 @api_view()
+@user_login_required
 def get_critic_reviews(request):
     data = request.query_params
     user_id = data.get('user_id')
@@ -68,6 +72,7 @@ def get_critic_reviews(request):
 
 
 @api_view(['POST'])
+@user_login_required
 def add_review(request):
     data = request.data
     try:
@@ -79,6 +84,7 @@ def add_review(request):
 
 
 @api_view(['POST'])
+@user_login_required
 def edit_review(request, pk):
     data = request.data
 
@@ -95,6 +101,7 @@ def edit_review(request, pk):
 
 
 @api_view(['POST'])
+@user_login_required
 def delete_review(request, pk):
     data = request.data
 
